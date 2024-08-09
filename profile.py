@@ -47,21 +47,21 @@ swiface3 = mysw.addInterface()
 node1 = request.RawPC("node1")
 node1.hardware_type = "xl170"
 node1.disk_image = GLOBALS.image
-node1.addService(pg.Execute(shell="bash", command=GLOBALS.command))
+node1.addService(pg.Execute(shell="/bin/bash", command=GLOBALS.command))
 iface1 = node1.addInterface()
 iface1.addAddress(pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 
 node2 = request.RawPC("node2")
 node2.hardware_type = "xl170"
 node2.disk_image = GLOBALS.image
-node2.addService(pg.Execute(shell="bash", command=GLOBALS.command))
+node2.addService(pg.Execute(shell="/bin/bash", command=GLOBALS.command))
 iface2 = node2.addInterface()
 iface2.addAddress(pg.IPv4Address("192.168.1.2", "255.255.255.0"))
 
 node3 = request.RawPC("node3")
 node3.hardware_type = "xl170"
 node3.disk_image = GLOBALS.image
-node3.addService(pg.Execute(shell="bash", command=GLOBALS.command))
+node3.addService(pg.Execute(shell="/bin/bash", command=GLOBALS.command))
 iface3 = node3.addInterface()
 iface3.addAddress(pg.IPv4Address("192.168.1.3", "255.255.255.0"))
 
