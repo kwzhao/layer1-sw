@@ -4,9 +4,6 @@
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 sudo -k chsh -s "$(which zsh)" "${USER}"
 
-# Install Rust
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-
 # Install zsh plugins
 curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh |
     bash -s -- --repo rossmacarthur/sheldon --to ~/.cargo/bin
