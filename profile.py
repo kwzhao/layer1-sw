@@ -52,7 +52,7 @@ for i in range(params.nr_nodes):
 
 # Create the nodes dynamically based on the number specified.
 for i in range(params.nr_nodes):
-    node_name = f"node{i + 1}"
+    node_name = "node{}".format(i + 1)
     node = request.RawPC(node_name)
     node.hardware_type = "xl170"
     node.disk_image = GLOBALS.image
@@ -66,7 +66,7 @@ for i in range(params.nr_nodes):
     iface.addAddress(pg.IPv4Address(ip_address, GLOBALS.netmask))
 
     # Create a link between the node's interface and the corresponding switch interface.
-    link = request.L1Link(f"link{i + 1}")
+    link = request.L1Link("link{}".format(i + 1))
     link.addInterface(iface)
     link.addInterface(switch_interfaces[i])
 
