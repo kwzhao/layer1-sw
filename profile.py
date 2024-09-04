@@ -1,4 +1,4 @@
-"""This profile allocates three bare metal nodes and connects them together via a Dell or Mellanox switch with layer1 links.
+"""This profile allocates N bare metal nodes and connects them together via a Dell or Mellanox switch with layer1 links.
 
 Instructions:
 Click on any node in the topology and choose the `shell` menu item. When your shell window appears, use `ping` to test the link.
@@ -22,12 +22,15 @@ import geni.rspec.emulab as emulab
 class GLOBALS:
     image = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD"
     command = "/local/repository/setup-node.sh"
+    base_ip = "192.168.1."
+    netmask = "255.255.255.0"
 
 
 pc = portal.Context()
-
 request = pc.makeRequestRSpec()
 
+# Read parameters.
+pc.defineParameter("nr_nodes", "Number of nodes", portal.ParameterType.INTEGER, 3)
 pc.defineParameter(
     "phystype",
     "Switch type",
@@ -35,46 +38,37 @@ pc.defineParameter(
     "dell-s4048",
     [("mlnx-sn2410", "Mellanox SN2410"), ("dell-s4048", "Dell S4048")],
 )
-
 params = pc.bindParameters()
 
-mysw = request.Switch("mysw")
-mysw.hardware_type = params.phystype
-swiface1 = mysw.addInterface()
-swiface2 = mysw.addInterface()
-swiface3 = mysw.addInterface()
+# Create the switch with the specified type.
+switch = request.Switch("mysw")
+switch.hardware_type = params.phystype
 
-node1 = request.RawPC("node1")
-node1.hardware_type = "xl170"
-node1.disk_image = GLOBALS.image
-node1.addService(pg.Execute(shell="bash", command=GLOBALS.command))
-iface1 = node1.addInterface()
-iface1.addAddress(pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+# Add interfaces to the switch dynamically.
+switch_interfaces = []
+for i in range(params.nr_nodes):
+    iface = switch.addInterface()
+    switch_interfaces.append(iface)
 
-node2 = request.RawPC("node2")
-node2.hardware_type = "xl170"
-node2.disk_image = GLOBALS.image
-node2.addService(pg.Execute(shell="bash", command=GLOBALS.command))
-iface2 = node2.addInterface()
-iface2.addAddress(pg.IPv4Address("192.168.1.2", "255.255.255.0"))
+# Create the nodes dynamically based on the number specified.
+for i in range(params.nr_nodes):
+    node_name = f"node{i + 1}"
+    node = request.RawPC(node_name)
+    node.hardware_type = "xl170"
+    node.disk_image = GLOBALS.image
+    node.addService(pg.Execute(shell="bash", command=GLOBALS.command))  # Add the setup command
 
-node3 = request.RawPC("node3")
-node3.hardware_type = "xl170"
-node3.disk_image = GLOBALS.image
-node3.addService(pg.Execute(shell="bash", command=GLOBALS.command))
-iface3 = node3.addInterface()
-iface3.addAddress(pg.IPv4Address("192.168.1.3", "255.255.255.0"))
+    # Add an interface to the node.
+    iface = node.addInterface()
 
-link1 = request.L1Link("link1")
-link1.addInterface(iface1)
-link1.addInterface(swiface1)
+    # Assign an IP address based on the node index.
+    ip_address = GLOBALS.base_ip + str(i + 1)
+    iface.addAddress(pg.IPv4Address(ip_address, GLOBALS.netmask))
 
-link2 = request.L1Link("link2")
-link2.addInterface(iface2)
-link2.addInterface(swiface2)
+    # Create a link between the node's interface and the corresponding switch interface.
+    link = request.L1Link(f"link{i + 1}")
+    link.addInterface(iface)
+    link.addInterface(switch_interfaces[i])
 
-link3 = request.L1Link("link3")
-link3.addInterface(iface3)
-link3.addInterface(swiface3)
-
+# Output the RSpec.
 pc.printRequestRSpec(request)
