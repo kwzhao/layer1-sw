@@ -11,8 +11,9 @@ id="$1"
 advertise_ip="$2"
 manager_ip="$3"
 
-cargo run --release worker \
+nohup cargo run --release worker \
     --id "$id" \
     --advertise-addr "${advertise_ip}:50000" \
     --manager-addr "${manager_ip}:50000" \
-    --metrics-addr 0.0.0.0:9000 &
+    --metrics-addr 0.0.0.0:9000 \
+    >emu.log 2>&1 &
