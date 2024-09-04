@@ -17,11 +17,10 @@ configuration when your experiment ends."""
 import geni.portal as portal
 import geni.rspec.pg as pg
 import geni.rspec.emulab as emulab
-
+import shlex
 
 class GLOBALS:
     image = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD"
-    command = "/local/repository/setup-node.sh"
     base_ip = "192.168.1."
     netmask = "255.255.255.0"
 
@@ -56,7 +55,6 @@ for i in range(params.nr_nodes):
     node = request.RawPC(node_name)
     node.hardware_type = "xl170"
     node.disk_image = GLOBALS.image
-    node.addService(pg.Execute(shell="bash", command=GLOBALS.command))  # Add the setup command
 
     # Add an interface to the node.
     iface = node.addInterface()
@@ -64,6 +62,17 @@ for i in range(params.nr_nodes):
     # Assign an IP address based on the node index.
     ip_address = GLOBALS.base_ip + str(i + 1)
     iface.addAddress(pg.IPv4Address(ip_address, GLOBALS.netmask))
+
+    # Add a startup script.
+    if i == 0:
+        command = "/local/repository/setup-manager.sh"
+    else:
+        command = "/local/repository/setup-worker.sh {} {} {}".format(
+            shlex.quote(str(i)),
+            shlex.quote(ip_address),
+            shlex.quote(GLOBALS.base_ip + "1") # manager address
+        )
+    node.addService(pg.Execute(shell="bash", command="sudo -u kwzhao -H {}".format(command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
     link = request.L1Link("link{}".format(i + 1))
