@@ -17,7 +17,6 @@ configuration when your experiment ends."""
 import geni.portal as portal
 import geni.rspec.pg as pg
 import geni.rspec.emulab as emulab
-import shlex
 
 class GLOBALS:
     image = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD"
@@ -67,11 +66,7 @@ for i in range(params.nr_nodes):
     if i == 0:
         command = "/local/repository/setup-manager.sh"
     else:
-        command = "/local/repository/setup-worker.sh {} {} {}".format(
-            shlex.quote(str(i)),
-            shlex.quote(ip_address),
-            shlex.quote(GLOBALS.base_ip + "1") # manager address
-        )
+        command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
     node.addService(pg.Execute(shell="bash", command="sudo -u kwzhao -H {}".format(command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
