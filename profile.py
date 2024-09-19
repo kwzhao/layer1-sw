@@ -36,6 +36,7 @@ pc.defineParameter(
     "dell-s4048",
     [("mlnx-sn2410", "Mellanox SN2410"), ("dell-s4048", "Dell S4048")],
 )
+pc.defineParameter("user", "User", portal.ParameterType.STRING, "kwzhao")
 params = pc.bindParameters()
 
 # Create the switch with the specified type.
@@ -67,7 +68,7 @@ for i in range(params.nr_nodes):
         command = "/local/repository/setup-manager.sh"
     else:
         command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
-    node.addService(pg.Execute(shell="bash", command="sudo -u kwzhao -H {}".format(command)))
+    node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
     link = request.L1Link("link{}".format(i + 1))
