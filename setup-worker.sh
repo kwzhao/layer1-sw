@@ -11,7 +11,7 @@ id="$1"
 advertise_ip="$2"
 manager_ip="$3"
 
-nohup cargo run --release worker \
+nohup ~/.cargo/bin/cargo run --release worker \
     --id "$id" \
     --advertise-addr "${advertise_ip}:50000" \
     --manager-addr "${manager_ip}:50000" \
