@@ -64,11 +64,11 @@ for i in range(params.nr_nodes):
     iface.addAddress(pg.IPv4Address(ip_address, GLOBALS.netmask))
 
     # Add a startup script.
-    if i == 0:
-        command = "/local/repository/setup-manager.sh"
-    else:
-        command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
-    node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
+    # if i == 0:
+    #     command = "/local/repository/setup-manager.sh"
+    # else:
+    #     command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
+    # node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
     link = request.L1Link("link{}".format(i + 1))
