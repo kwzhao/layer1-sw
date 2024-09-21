@@ -51,7 +51,7 @@ for i in range(params.nr_nodes):
 
 # Create the nodes dynamically based on the number specified.
 for i in range(params.nr_nodes):
-    node_name = "node{}".format(i + 1)
+    node_name = "node{}".format(i)
     node = request.RawPC(node_name)
     node.hardware_type = "xl170"
     node.disk_image = GLOBALS.image
@@ -60,18 +60,24 @@ for i in range(params.nr_nodes):
     iface = node.addInterface()
 
     # Assign an IP address based on the node index.
-    ip_address = GLOBALS.base_ip + str(i + 1)
+    ip_address = GLOBALS.base_ip + str(i)
     iface.addAddress(pg.IPv4Address(ip_address, GLOBALS.netmask))
 
     # Add a startup script.
-    # if i == 0:
-    #     command = "/local/repository/setup-manager.sh"
-    # else:
-    #     command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
-    # node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
+    if i == 0:
+        # The first node scrapes metrics.
+        worker_ips = " ".join([GLOBALS.base_ip + str(j) for j in range(2, params.nr_nodes)])
+        command = "/local/repository/setup-metrics.sh {}".format(worker_ips)
+    elif i == 1:
+        # The second node is the manager.
+        command = "/local/repository/setup-manager.sh"
+    else:
+        # All the rest are workers.
+        command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
+    node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
-    link = request.L1Link("link{}".format(i + 1))
+    link = request.L1Link("link{}".format(i))
     link.addInterface(iface)
     link.addInterface(switch_interfaces[i])
 
