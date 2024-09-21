@@ -26,11 +26,9 @@ ip_addresses=("$@")
 
 # Build the targets list.
 targets=""
-port=9001
 
 for ip in "${ip_addresses[@]}"; do
-    targets+="\"$ip:$port\", "
-    ((port++))
+    targets+="\"$ip:9000\", "
 done
 
 # Remove trailing comma and space.
