@@ -11,6 +11,9 @@ id="$1"
 advertise_ip="$2"
 manager_ip="$3"
 
+# Wait for the switch to come up.
+sleep 2m
+
 nohup ~/.cargo/bin/cargo run --release worker \
     --id "$id" \
     --advertise-addr "${advertise_ip}:50000" \
