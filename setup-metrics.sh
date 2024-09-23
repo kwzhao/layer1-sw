@@ -48,4 +48,5 @@ EOF
 # Wait for the switch to come up.
 sleep 6m
 
-# TODO: Start Prometheus.
+# Start Prometheus.
+sudo docker run -p 9090:9090 -v ~/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
