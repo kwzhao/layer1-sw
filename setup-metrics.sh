@@ -46,6 +46,6 @@ scrape_configs:
 EOF
 
 # Wait for the switch to come up.
-sleep 2m
+sleep 6m
 
 # TODO: Start Prometheus.
