@@ -49,4 +49,4 @@ EOF
 sleep 6m
 
 # Start Prometheus.
-sudo docker run -p 9090:9090 -v ~/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+sudo docker run -d -p 9090:9090 -v ~/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
