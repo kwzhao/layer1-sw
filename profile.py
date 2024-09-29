@@ -73,7 +73,7 @@ for i in range(params.nr_nodes):
         command = "/local/repository/setup-manager.sh"
     else:
         # All the rest are workers.
-        command = "/local/repository/setup-worker.sh {} {} {}".format(i, ip_address, GLOBALS.base_ip + "1")
+        command = "/local/repository/setup-worker.sh {} {} {}".format(i - 2, ip_address, GLOBALS.base_ip + "1")
     node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
