@@ -2,7 +2,7 @@
 
 # Install deps
 sudo apt-get -qq update
-sudo apt-get -q install -y iperf3 protobuf-compiler sshpass
+sudo apt-get -q install -y iperf3 protobuf-compiler sshpass nload
 
 # Configure zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
