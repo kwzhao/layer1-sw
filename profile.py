@@ -65,15 +65,12 @@ for i in range(params.nr_nodes):
 
     # Add a startup script.
     if i == 0:
-        # The first node scrapes metrics.
-        worker_ips = " ".join([GLOBALS.base_ip + str(j) for j in range(2, params.nr_nodes)])
-        command = "/local/repository/setup-metrics.sh {}".format(worker_ips)
-    elif i == 1:
-        # The second node is the manager.
-        command = "/local/repository/setup-manager.sh"
+        # The first node is the manager.
+        worker_ips = " ".join([GLOBALS.base_ip + str(j) for j in range(1, params.nr_nodes)])
+        command = "/local/repository/setup-manager.sh {}".format(worker_ips)
     else:
         # All the rest are workers.
-        command = "/local/repository/setup-worker.sh {} {} {}".format(i - 2, ip_address, GLOBALS.base_ip + "1")
+        command = "/local/repository/setup-worker.sh {} {} {}".format(i - 1, ip_address, GLOBALS.base_ip + "0")
     node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.
