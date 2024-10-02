@@ -53,7 +53,7 @@ global:
 
 scrape_configs:
     - job_name: emu
-    static_configs:
+      static_configs:
         - targets: [$targets]
 EOF
 
