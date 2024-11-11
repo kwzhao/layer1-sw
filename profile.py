@@ -37,6 +37,7 @@ pc.defineParameter(
     [("mlnx-sn2410", "Mellanox SN2410"), ("dell-s4048", "Dell S4048")],
 )
 pc.defineParameter("user", "User", portal.ParameterType.STRING, "kwzhao")
+pc.defineParameter("branch", "emu branch", portal.ParameterType.STRING, "main")
 params = pc.bindParameters()
 
 # Create the switch with the specified type.
@@ -67,10 +68,10 @@ for i in range(params.nr_nodes):
     if i == 0:
         # The first node is the manager.
         worker_ips = " ".join([GLOBALS.base_ip + str(j) for j in range(1, params.nr_nodes)])
-        command = "/local/repository/setup-manager.sh {}".format(worker_ips)
+        command = "/local/repository/setup-manager.sh {} {}".format(params.branch, worker_ips)
     else:
         # All the rest are workers.
-        command = "/local/repository/setup-worker.sh {} {} {}".format(i - 1, ip_address, GLOBALS.base_ip + "0")
+        command = "/local/repository/setup-worker.sh {} {} {} {}".format(params.branch, i - 1, ip_address, GLOBALS.base_ip + "0")
     node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
 
     # Create a link between the node's interface and the corresponding switch interface.

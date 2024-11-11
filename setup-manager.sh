@@ -4,7 +4,8 @@ set -euo pipefail
 
 /local/repository/setup-node.sh
 
-git clone https://github.com/netiken/emu.git ~/emu
+branch="$1"
+git clone --branch "${branch}" https://github.com/netiken/emu.git ~/emu
 cd ~/emu || exit
 
 # Wait for the switch to come up.
@@ -34,6 +35,7 @@ sudo apt-get -qq update
 sudo apt-get -q install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Collect IP addresses into an array.
+shift
 ip_addresses=("$@")
 
 # Build the targets list.

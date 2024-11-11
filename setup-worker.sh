@@ -4,12 +4,13 @@ set -euo pipefail
 
 /local/repository/setup-node.sh
 
-git clone https://github.com/netiken/emu.git ~/emu
-cd ~/emu || exit
+branch="$1"
+id="$2"
+advertise_ip="$3"
+manager_ip="$4"
 
-id="$1"
-advertise_ip="$2"
-manager_ip="$3"
+git clone --branch "${branch}" https://github.com/netiken/emu.git ~/emu
+cd ~/emu || exit
 
 # Wait for the switch to come up.
 sleep 6m
