@@ -17,7 +17,9 @@ sleep 6m
 
 nohup ~/.cargo/bin/cargo run --release worker \
     --id "$id" \
-    --advertise-addr "${advertise_ip}:50000" \
+    --advertise-ip "${advertise_ip}" \
+    --control-port 50000 \
+    --data-port 50001 \
     --manager-addr "${manager_ip}:50000" \
     --metrics-addr 0.0.0.0:9000 \
     >emu.log 2>&1 &
