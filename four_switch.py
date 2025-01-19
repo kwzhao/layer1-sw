@@ -54,6 +54,9 @@ pc.defineParameter(
     [("mlnx-sn2410", "Mellanox SN2410"), ("dell-s4048", "Dell S4048")],
 )
 
+pc.defineParameter("user", "User", portal.ParameterType.STRING, "kwzhao")
+pc.defineParameter("branch", "emu branch", portal.ParameterType.STRING, "main")
+
 # Retrieve the values the user specifies during instantiation. Must be called exactly once.
 params = pc.bindParameters()
 
