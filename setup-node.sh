@@ -35,4 +35,9 @@ echo "ZVM_VI_INSERT_ESCAPE_BINDKEY=jk" >>~/.zshrc
 sudo sysctl -w net.ipv4.tcp_tw_reuse=1
 sudo sysctl -w net.ipv4.ip_local_port_range="1024 65535"
 
+# Configure DCTCP
+sudo modprobe tcp_dctcp
+sudo sysctl -w net.ipv4.tcp_ecn=1
+sudo sysctl -w net.ipv4.tcp_congestion_control=dctcp
+
 exit 0
