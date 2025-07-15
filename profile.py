@@ -16,7 +16,7 @@ configuration when your experiment ends."""
 
 import geni.portal as portal
 import geni.rspec.pg as pg
-import geni.rspec.emulab as emulab
+
 
 class GLOBALS:
     image = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD"
@@ -67,12 +67,22 @@ for i in range(params.nr_nodes):
     # Add a startup script.
     if i == 0:
         # The first node is the manager.
-        worker_ips = " ".join([GLOBALS.base_ip + str(j) for j in range(1, params.nr_nodes)])
-        command = "/local/repository/setup-manager.sh {} {}".format(params.branch, worker_ips)
+        worker_ips = " ".join(
+            [GLOBALS.base_ip + str(j) for j in range(1, params.nr_nodes)]
+        )
+        command = "/local/repository/setup-manager.sh {} {}".format(
+            params.branch, worker_ips
+        )
     else:
         # All the rest are workers.
-        command = "/local/repository/setup-worker.sh {} {} {} {}".format(params.branch, i - 1, ip_address, GLOBALS.base_ip + "0")
-    node.addService(pg.Execute(shell="bash", command="sudo -u {} -H {}".format(params.user, command)))
+        command = "/local/repository/setup-worker.sh {} {} {} {}".format(
+            params.branch, i - 1, ip_address, GLOBALS.base_ip + "0"
+        )
+    node.addService(
+        pg.Execute(
+            shell="bash", command="sudo -u {} -H {}".format(params.user, command)
+        )
+    )
 
     # Create a link between the node's interface and the corresponding switch interface.
     link = request.L1Link("link{}".format(i))

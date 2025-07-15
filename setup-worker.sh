@@ -15,6 +15,7 @@ cd ~/emu || exit
 # Wait for the switch to come up.
 sleep 6m
 
+# Start emu worker
 nohup ~/.cargo/bin/cargo run --release worker \
     --id "$id" \
     --advertise-ip "${advertise_ip}" \
@@ -23,3 +24,29 @@ nohup ~/.cargo/bin/cargo run --release worker \
     --manager-addr "${manager_ip}:50000" \
     --metrics-addr 0.0.0.0:9000 \
     >emu.log 2>&1 &
+
+cd ~ || exit
+
+# Install eBPF development tools
+sudo apt-get -q install -y \
+    linux-headers-"$(uname -r)" \
+    libbpf-dev \
+    llvm \
+    clang \
+    gcc-multilib \
+    build-essential \
+    linux-tools-"$(uname -r)" \
+    linux-tools-common \
+    linux-tools-generic
+sudo apt-get -q install -y \
+    libelf-dev \
+    zlib1g-dev \
+    libbfd-dev \
+    libcap-dev \
+    pahole
+
+# Fetch and compile TCP monitor
+git clone https://github.com/kwzhao/workfeed.git ~/workfeed
+cd workfeed/ebpf || exit
+sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c >include/vmlinux.h
+make build/tcp_monitor
