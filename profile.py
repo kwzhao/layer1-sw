@@ -29,7 +29,7 @@ pc = portal.Context()
 request = pc.makeRequestRSpec()
 
 # Read parameters.
-pc.defineParameter("nr_nodes", "Number of nodes", portal.ParameterType.INTEGER, 3)
+pc.defineParameter("nr_nodes", "Number of nodes", portal.ParameterType.INTEGER, 5)
 pc.defineParameter(
     "phystype",
     "Switch type",
