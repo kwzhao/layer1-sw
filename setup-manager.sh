@@ -61,3 +61,37 @@ EOF
 
 # Start Prometheus.
 sudo docker run -d -p 9090:9090 -v ~/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+
+# Clone and build sampler from workfeed repo
+git clone https://github.com/kwzhao/workfeed.git ~/workfeed
+cd ~/workfeed/sampler
+~/.cargo/bin/cargo build --release
+
+# Create sampler config
+cat >~/sampler_config.json <<EOF
+{
+    "sampling": {
+        "rules": [
+            {"max_bytes": null, "rate": 1.0}
+        ]
+    },
+    "batching": {
+        "max_batch_size": 128,
+        "timeout_ms": 100,
+        "connection_timeout_ms": 500
+    },
+    "controller": {
+        "address": "127.0.0.1:50002"
+    },
+    "monitoring": {
+        "window_seconds": 60,
+        "warn_on_empty_class": false
+    }
+}
+EOF
+
+# Start sampler on port 50001
+nohup ~/workfeed/sampler/target/release/sampler \
+    --config ~/sampler_config.json \
+    --listen 0.0.0.0:50001 \
+    >sampler.log 2>&1 &

@@ -50,3 +50,11 @@ git clone https://github.com/kwzhao/workfeed.git ~/workfeed
 cd workfeed/ebpf || exit
 sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c >include/vmlinux.h
 make build/tcp_monitor
+
+# Start tcp_monitor in daemon mode, sending to manager's sampler on port 50001
+nohup sudo ~/workfeed/ebpf/build/tcp_monitor --daemon \
+    --udp-host "${manager_ip}" \
+    --udp-port 50001 \
+    --batch-size 128 \
+    --flush-ms 200 \
+    >tcp_monitor.log 2>&1 &
