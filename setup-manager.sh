@@ -9,7 +9,7 @@ git clone --branch "${branch}" https://github.com/netiken/emu.git ~/emu
 cd ~/emu || exit
 
 # Wait for the switch to come up.
-sleep 6m
+sleep 10m
 
 # Start the manager.
 nohup ~/.cargo/bin/cargo run --release manager \
