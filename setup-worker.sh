@@ -23,7 +23,7 @@ nohup ~/.cargo/bin/cargo run --release worker \
     --data-port 50001 \
     --manager-addr "${manager_ip}:50000" \
     --metrics-addr 0.0.0.0:9000 \
-    >emu.log 2>&1 &
+    >~/emu.log 2>&1 &
 
 cd ~ || exit
 
@@ -51,17 +51,10 @@ cd workfeed/ebpf || exit
 sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c >include/vmlinux.h
 make build/tcp_monitor
 
-# Wait for sampler to be ready on manager node
-echo "Waiting for sampler on ${manager_ip}:50001..."
-while ! nc -zu "${manager_ip}" 50001 2>/dev/null; do
-    sleep 5
-done
-echo "Sampler is ready, starting tcp_monitor"
-
 # Start tcp_monitor in daemon mode, sending to manager's sampler on port 50001
 nohup sudo ~/workfeed/ebpf/build/tcp_monitor --daemon \
     --udp-host "${manager_ip}" \
     --udp-port 50001 \
     --batch-size 128 \
     --flush-ms 200 \
-    >tcp_monitor.log 2>&1 &
+    >~/tcp_monitor.log 2>&1 &

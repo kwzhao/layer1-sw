@@ -14,7 +14,7 @@ sleep 10m
 # Start the manager.
 nohup ~/.cargo/bin/cargo run --release manager \
     --port 50000 \
-    >emu.log 2>&1 &
+    >~/emu.log 2>&1 &
 
 # Add Docker's official GPG key.
 cd ~ || exit
@@ -94,4 +94,4 @@ EOF
 nohup ~/workfeed/sampler/target/release/sampler \
     --config ~/sampler_config.json \
     --listen 0.0.0.0:50001 \
-    >sampler.log 2>&1 &
+    >~/sampler.log 2>&1 &
