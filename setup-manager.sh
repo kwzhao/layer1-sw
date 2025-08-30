@@ -90,8 +90,8 @@ cat >~/sampler_config.json <<EOF
 }
 EOF
 
-# Start sampler on port 50001
-nohup ~/workfeed/sampler/target/release/sampler \
+# Start sampler on port 50001 with info-level logging
+RUST_LOG=sampler=info nohup ~/workfeed/sampler/target/release/sampler \
     --config ~/sampler_config.json \
     --listen 0.0.0.0:50001 \
     >~/sampler.log 2>&1 &
